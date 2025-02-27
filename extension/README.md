@@ -1,6 +1,6 @@
 # Gmail AI Response Generator
 
-A Chrome extension that helps you generate smart email responses using AI. The extension integrates with Gmail and uses OpenRouter's Gemini Pro model to generate contextually appropriate responses to your emails.
+A Chrome extension that helps you generate smart email responses using AI. The extension integrates with Gmail and uses a secure backend server to generate contextually appropriate responses to your emails.
 
 ## Features
 
@@ -8,7 +8,7 @@ A Chrome extension that helps you generate smart email responses using AI. The e
 - One-click response generation
 - Professional and contextual responses
 - Simple and modern interface
-- Secure API key management
+- Secure backend processing
 
 ## Installation
 
@@ -19,11 +19,9 @@ A Chrome extension that helps you generate smart email responses using AI. The e
 
 ## Setup
 
-1. Sign up for an account at [OpenRouter](https://openrouter.ai/)
-2. Get your API key from the OpenRouter dashboard
-3. Click the extension icon in Chrome
-4. Enter your OpenRouter API key in the settings
-5. Click "Save Settings"
+1. Click the extension icon in Chrome
+2. Enter your name in the settings
+3. Click "Save Settings"
 
 ## Usage
 
@@ -36,9 +34,9 @@ A Chrome extension that helps you generate smart email responses using AI. The e
 
 ## Security
 
-- Your OpenRouter API key is stored securely in Chrome's storage
+- All API calls are made to a secure backend server
 - No email content is stored or logged
-- All API calls are made directly to OpenRouter with proper security headers
+- Simple user preferences stored locally
 
 ## Development
 
