@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    const { emailContent, recipientInfo, senderInfo } = await req.json();
+    const { emailContent, senderInfo } = await req.json();
     if (!emailContent) {
         return NextResponse.json(
             { error: 'Missing required field: emailContent' },
@@ -50,10 +50,9 @@ export async function POST(req: NextRequest) {
     }
 
     const contextInfo = `
-    ${recipientInfo ? `The email recipient's name is ${recipientInfo.fullName} (first name: ${recipientInfo.firstName}).` : "The recipient's name could not be determined."}
     ${senderInfo ? `Your name is ${senderInfo.fullName} (first name: ${senderInfo.firstName}, last name: ${senderInfo.lastName}).` : "Your name could not be determined, so sign off naturally without a name."}
     Please detect the language of the email and respond in the same language with appropriate formality and cultural considerations.
-  `;
+    `;
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',

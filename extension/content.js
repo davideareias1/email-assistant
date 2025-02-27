@@ -136,57 +136,6 @@ function extractEmailContent() {
     return null;
 }
 
-// Refactored recipient name extraction tailored to the current open email.
-// This implementation avoids relying on Gmail's unstable class names.
-// Instead, it first attempts to retrieve the container for the open email using
-// a selector such as 'div.adn.ads' and then extracts recipient names from there.
-// The first recipient is assumed to always be you and is therefore skipped.
-function extractRecipientName(container = null) {
-    try {
-        // If no container is provided, attempt to find the container for the open email.
-        // 'div.adn.ads' is commonly present in Gmail's open email view.
-        if (!container) {
-            container = document.querySelector('div.adn.ads') || document;
-        }
-
-        // Select all descendant nodes that have both an "email" and a "name" attribute.
-        const recipientNodes = container.querySelectorAll('[email][name]');
-        const recipientNamesSet = new Set();
-
-        recipientNodes.forEach(node => {
-            // Prefer the 'name' attribute; fallback to textContent if needed.
-            let name = node.getAttribute('name') || node.textContent;
-            name = name ? name.trim() : "";
-
-            // Make sure the name is not empty and does not exactly match the email.
-            const emailAttr = node.getAttribute('email');
-            if (name && name !== emailAttr) {
-                recipientNamesSet.add(name);
-            }
-        });
-
-        const allNames = [...recipientNamesSet];
-
-        // Since the first recipient is always you, skip the first one.
-        if (allNames.length > 1) {
-            const recipients = allNames.slice(1);  // Skip the first item.
-            const fullName = recipients[0];
-            const firstName = fullName.split(' ')[0];
-            return {
-                firstName,
-                fullName,
-                // The array now contains only recipients beyond the first one.
-                allRecipients: recipients
-            };
-        }
-
-        return null;
-    } catch (e) {
-        console.error('Error extracting recipient name:', e);
-        return null;
-    }
-}
-
 // Function to extract sender's name with better error handling
 async function getSenderName() {
     try {
@@ -206,11 +155,11 @@ async function getSenderName() {
     }
 }
 
-// Generate response using Next.js API
+// Updated generateResponse: use the email content to extract recipient's name.
+// We no longer rely on scraping the DOM.
+// The recipient's name is assumed to be written in the signature at the end of the email.
 async function generateResponse(emailContent) {
     try {
-        const recipientInfo = extractRecipientName();
-        console.log(recipientInfo)
         const senderInfo = await getSenderName();
 
         const response = await fetch('https://email-assistant-beryl.vercel.app/api/make-response', {
@@ -221,7 +170,6 @@ async function generateResponse(emailContent) {
             },
             body: JSON.stringify({
                 emailContent,
-                recipientInfo,
                 senderInfo
             })
         });
