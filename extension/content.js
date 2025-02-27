@@ -198,10 +198,11 @@ async function generateResponse(emailContent) {
         const recipientInfo = extractRecipientName();
         const senderInfo = await getSenderName();
 
-        const response = await fetch('YOUR_NEXTJS_API_URL/api/make-response', {
+        const response = await fetch('https://email-assistant-beryl.vercel.app/api/make-response', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'x-extension-secret': 'P9qwNMcjwgLcC7U5nWDiQ87sGo9bwB2PRhS634dYR7qmomEjZP'
             },
             body: JSON.stringify({
                 emailContent,

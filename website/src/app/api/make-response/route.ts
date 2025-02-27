@@ -1,14 +1,29 @@
-import { EMAIL_SYSTEM_PROMPT } from '@/app/lib/prompts/emailPrompt';
+import { EMAIL_SYSTEM_PROMPT } from '@/lib/emailPrompt';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
     try {
-        const { emailContent, apiKey, recipientInfo, senderInfo } = await req.json();
-
-        if (!emailContent || !apiKey) {
+        const extensionSecret = req.headers.get('x-extension-secret');
+        if (extensionSecret !== process.env.EXTENSION_SECRET) {
             return NextResponse.json(
-                { error: 'Missing required fields' },
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
+        }
+
+        const { emailContent, recipientInfo, senderInfo } = await req.json();
+        if (!emailContent) {
+            return NextResponse.json(
+                { error: 'Missing required field: emailContent' },
                 { status: 400 }
+            );
+        }
+
+        const apiKey = process.env.OPENROUTER_API_KEY;
+        if (!apiKey) {
+            return NextResponse.json(
+                { error: 'API key not configured in environment variables' },
+                { status: 500 }
             );
         }
 
