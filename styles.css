@@ -1,0 +1,139 @@
+/* General styles */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Email formatting styles */
+.email-greeting {
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+}
+
+.email-closing {
+    margin-top: 1em;
+    margin-bottom: 0.25em;
+}
+
+.email-signature {
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 0.25em;
+    margin-top: 0.25em;
+}
+
+blockquote {
+    border-left: 3px solid #e0e0e0;
+    margin: 0.5em 0;
+    padding-left: 1em;
+    color: #666;
+}
+
+ul {
+    margin: 0.5em 0;
+    padding-left: 2em;
+}
+
+li {
+    margin: 0.25em 0;
+}
+
+p {
+    margin: 0.5em 0;
+}
+
+/* Gmail button styles */
+.ai-response-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    margin: 0 4px;
+    border-radius: 4px;
+    background-color: #000000;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.ai-response-btn:hover {
+    background-color: #333333;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Notification styles */
+.ai-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+}
+
+.ai-notification.success {
+    background-color: #10B981;
+}
+
+.ai-notification.error {
+    background-color: #EF4444;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Extension popup specific styles */
+.container {
+    min-width: 300px;
+}
+
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #E5E7EB;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 8px 16px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #333333;
+}

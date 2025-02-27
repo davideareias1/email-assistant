@@ -1,0 +1,190 @@
+:root {
+    --primary-color: #1a73e8;
+    --primary-hover: #1557b0;
+    --background-color: #ffffff;
+    --text-color: #202124;
+    --secondary-text: #5f6368;
+    --border-color: #dadce0;
+    --error-color: #d93025;
+    --success-color: #188038;
+    --input-bg: #f1f3f4;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.container {
+    width: 360px;
+    padding: 24px;
+}
+
+.header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.subtitle {
+    color: var(--secondary-text);
+    font-size: 14px;
+}
+
+.content {
+    margin-bottom: 24px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    color: var(--secondary-text);
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    font-size: 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    transition: all 0.2s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: var(--background-color);
+}
+
+.toggle-visibility {
+    position: absolute;
+    right: 12px;
+    top: 38px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--secondary-text);
+}
+
+.toggle-visibility:hover {
+    color: var(--text-color);
+}
+
+.eye-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.primary-button {
+    flex: 1;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.primary-button:hover {
+    background-color: var(--primary-hover);
+}
+
+.link-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.link-button:hover {
+    background-color: rgba(26, 115, 232, 0.1);
+}
+
+.link-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.notification {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.notification.success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.notification.error {
+    background-color: var(--error-color);
+    color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    animation: fadeIn 0.3s ease-out;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Email Assistant Settings</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Email Assistant</h1>
+            <p class="subtitle">Configure your settings</p>
+        </div>
+
+        <div class="content">
+            <div class="input-group">
+                <label for="userName">Your Name</label>
+                <input type="text" id="userName" placeholder="Enter your full name" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="apiKey">API Key</label>
+                <input type="password" id="apiKey" placeholder="Enter your OpenRouter API key" autocomplete="off">
+                <button class="toggle-visibility" type="button" aria-label="Toggle API key visibility">
+                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="actions">
+                <button id="saveButton" class="primary-button">Save Settings</button>
+                <a href="https://openrouter.ai/keys" target="_blank" class="link-button">
+                    Get API Key
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div id="notification" class="notification" role="alert"></div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
