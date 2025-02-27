@@ -136,41 +136,55 @@ function extractEmailContent() {
     return null;
 }
 
-// Function to extract recipient name with better error handling
-function extractRecipientName() {
-    const selectors = [
-        // Compose view recipient field
-        'div[aria-label*="To"] span[email]',
-        // Reply view recipient
-        '.aO[role="region"] .gD span[email]',
-        // Expanded conversation view
-        '.amn span[email]',
-        // Simple reply view
-        'td.gD span[email]',
-        // Last resort - any email field
-        'span[email]'
-    ];
-
-    for (const selector of selectors) {
-        try {
-            const element = document.querySelector(selector);
-            if (element) {
-                // Try to get the display name first
-                const name = element.getAttribute('name') || safeExtractText(element);
-                if (name && name !== element.getAttribute('email')) {
-                    // Split name into parts and return first name
-                    const nameParts = name.split(' ');
-                    return {
-                        firstName: nameParts[0],
-                        fullName: name
-                    };
-                }
-            }
-        } catch (e) {
-            console.error(`Error extracting recipient from ${selector}:`, e);
+// Refactored recipient name extraction tailored to the current open email.
+// This implementation avoids relying on Gmail's unstable class names.
+// Instead, it first attempts to retrieve the container for the open email using
+// a selector such as 'div.adn.ads' and then extracts recipient names from there.
+// The first recipient is assumed to always be you and is therefore skipped.
+function extractRecipientName(container = null) {
+    try {
+        // If no container is provided, attempt to find the container for the open email.
+        // 'div.adn.ads' is commonly present in Gmail's open email view.
+        if (!container) {
+            container = document.querySelector('div.adn.ads') || document;
         }
+
+        // Select all descendant nodes that have both an "email" and a "name" attribute.
+        const recipientNodes = container.querySelectorAll('[email][name]');
+        const recipientNamesSet = new Set();
+
+        recipientNodes.forEach(node => {
+            // Prefer the 'name' attribute; fallback to textContent if needed.
+            let name = node.getAttribute('name') || node.textContent;
+            name = name ? name.trim() : "";
+
+            // Make sure the name is not empty and does not exactly match the email.
+            const emailAttr = node.getAttribute('email');
+            if (name && name !== emailAttr) {
+                recipientNamesSet.add(name);
+            }
+        });
+
+        const allNames = [...recipientNamesSet];
+
+        // Since the first recipient is always you, skip the first one.
+        if (allNames.length > 1) {
+            const recipients = allNames.slice(1);  // Skip the first item.
+            const fullName = recipients[0];
+            const firstName = fullName.split(' ')[0];
+            return {
+                firstName,
+                fullName,
+                // The array now contains only recipients beyond the first one.
+                allRecipients: recipients
+            };
+        }
+
+        return null;
+    } catch (e) {
+        console.error('Error extracting recipient name:', e);
+        return null;
     }
-    return null;
 }
 
 // Function to extract sender's name with better error handling
@@ -196,6 +210,7 @@ async function getSenderName() {
 async function generateResponse(emailContent) {
     try {
         const recipientInfo = extractRecipientName();
+        console.log(recipientInfo)
         const senderInfo = await getSenderName();
 
         const response = await fetch('https://email-assistant-beryl.vercel.app/api/make-response', {
