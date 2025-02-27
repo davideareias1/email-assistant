@@ -1,67 +1,5 @@
 // Constants
 const BUTTON_ID = 'ai-response-button';
-const SYSTEM_PROMPT = `## Role
-You are an expert email assistant that helps craft professional yet friendly email responses in multiple languages. Your responses should feel like a natural continuation of the user's communication style and match the language of the original email.
-
-## Language Handling
-- Detect and respond in the same language as the original email
-- For German emails:
-  - Use formal "Sie" unless informal tone is established
-  - Use appropriate German greetings and closings
-  - Follow German business communication standards
-- For English emails:
-  - Follow standard English business communication practices
-  - Adapt to US/UK/International English based on context
-- For other languages:
-  - Maintain appropriate formality levels
-  - Use culturally appropriate greetings and closings
-
-## Key Guidelines
-1. **Tone & Style**:
-   - Maintain professional yet approachable tone in the target language
-   - Match formality level to the original email's style
-   - Use natural expressions in the target language
-   - Avoid AI mentions, technical terms, and markdown
-
-2. **Structure**:
-   - Use language-appropriate greetings
-   - Short paragraphs (1-3 sentences)
-   - Separate ideas with line breaks (\\n)
-   - End with context-appropriate closing for the language
-
-3. **Sign-off Requirements**:
-   German:
-   - Formal: "Mit freundlichen Grüßen,\\n[Full Name]"
-   - Semi-formal: "Beste Grüße,\\n[Full Name]"
-   - No name: "Mit freundlichen Grüßen"
-
-   English:
-   - Formal: "Kind regards,\\n[Full Name]"
-   - Semi-formal: "Best regards,\\n[Full Name]"
-   - No name: "Kind regards,"
-
-4. **Content Rules**:
-   - Keep responses 50-120 words
-   - Address all points from the original email
-   - Add appropriate social niceties in target language
-   - Preserve important technical details
-   - Never invent information or make assumptions
-
-## Examples
-
-**German Formal**:
-"Vielen Dank für Ihre Anfrage.\\n\\nMit freundlichen Grüßen,\\nSarah Thompson"
-
-**German Informal**:
-"Danke für deine Nachricht.\\n\\nBeste Grüße,\\nMichael"
-
-**English Formal**:
-"Thank you for your inquiry.\\n\\nKind regards,\\nSarah Thompson"
-
-**English Informal**:
-"Thanks for reaching out.\\n\\nBest regards,\\nMichael"
-`;
-
 
 // Debounce function to limit function calls
 function debounce(func, wait) {
@@ -254,70 +192,31 @@ async function getSenderName() {
     }
 }
 
-// Generate response using OpenRouter API with proper error handling and timeout
+// Generate response using Next.js API
 async function generateResponse(emailContent) {
     try {
-        const result = await chrome.storage.sync.get(['openRouterApiKey']);
-        const apiKey = result.openRouterApiKey;
-
-        if (!apiKey) {
-            throw new Error('Please set your OpenRouter API key in the extension settings.');
-        }
-
         const recipientInfo = extractRecipientName();
         const senderInfo = await getSenderName();
 
-        const contextInfo = `
-            ${recipientInfo ? `The email recipient's name is ${recipientInfo.fullName} (first name: ${recipientInfo.firstName}).` : 'The recipient\'s name could not be determined.'}
-            ${senderInfo ? `Your name is ${senderInfo.fullName} (first name: ${senderInfo.firstName}, last name: ${senderInfo.lastName}).` : 'Your name could not be determined, so sign off naturally without a name.'}
-            Please detect the language of the email and respond in the same language with appropriate formality and cultural considerations.
-        `;
+        const response = await fetch('YOUR_NEXTJS_API_URL/api/make-response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                emailContent,
+                recipientInfo,
+                senderInfo
+            })
+        });
 
-        // Add timeout to fetch
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30-second timeout
-
-        try {
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': window.location.origin,
-                    'X-Title': 'Gmail AI Response Generator'
-                },
-                body: JSON.stringify({
-                    model: 'google/gemini-2.0-flash-lite-preview-02-05:free',
-                    messages: [
-                        { role: 'system', content: SYSTEM_PROMPT },
-                        { role: 'user', content: `${contextInfo}\n\nPlease generate a response to this email:\n\n${emailContent}` }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 1000
-                }),
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error?.message || `API error (${response.status}): Failed to generate response.`);
-            }
-
-            const data = await response.json();
-            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-                throw new Error('Invalid response format from API');
-            }
-
-            return data.choices[0].message.content;
-        } catch (error) {
-            clearTimeout(timeoutId);
-            if (error.name === 'AbortError') {
-                throw new Error('Request timed out. The API took too long to respond.');
-            }
-            throw error;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `API error (${response.status}): Failed to generate response.`);
         }
+
+        const data = await response.json();
+        return data.choices[0].message.content;
     } catch (error) {
         console.error('Error generating response:', error);
         throw error;

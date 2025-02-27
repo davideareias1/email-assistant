@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Email Assistant Settings</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Email Assistant</h1>
+            <p class="subtitle">Configure your settings</p>
+        </div>
+
+        <div class="content">
+            <div class="input-group">
+                <label for="userName">Your Name</label>
+                <input type="text" id="userName" placeholder="Enter your full name" autocomplete="off">
+            </div>
+
+            <div class="actions">
+                <button id="saveButton" class="primary-button">Save Settings</button>
+            </div>
+        </div>
+
+        <div id="notification" class="notification" role="alert"></div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
